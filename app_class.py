@@ -56,9 +56,14 @@ class App:
     def start_update(self):
         pass
 
+# ---------Dit tekent de tekst het scherm en maakt gebruik van de draw_text functie---------------------
     def start_draw(self):
         self.screen.fill(BLACK)
-        self.draw_text("PRESS SPACE TO START", self.screen, (200, HEIGHT // 2), START_TEXT_SIZE,
+        self.draw_text("PRESS SPACE TO START", self.screen, (115, HEIGHT // 2), START_TEXT_SIZE,
                        (170, 130, 60), START_FONT)
+        self.draw_text("PACMAN", self.screen, (150, HEIGHT // 4), START_TEXT_SIZE,
+                       (40, 180, 175), START_FONT)
         pygame.display.update()
         pygame.display.flip()
+
+
