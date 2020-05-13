@@ -18,6 +18,12 @@ class App:
         self.running = True
         self.state = 'start'
 
+        # voor het maken van de grid
+        self.cell_width = WIDTH // 28
+        self.cell_height = HEIGHT // 30
+
+        self.load()
+
     def run(self):
         while self.running:
             if self.state == 'start':
@@ -50,9 +56,25 @@ class App:
         position[1] = position[1] - text_size[1] // 2
         screen.blit(text, position)
 
+# laden achtergrond
+    def load(self):
+        self.background = pygame.image.load("./images/maze.png")
+        self.background = pygame.transform.scale(
+            self.background, (WIDTH, HEIGHT))
+
+
+# deze functie tekent lijnen over het scherm die we kunnen gebruiken om de muren de definieren.
+
+    def grid(self):
+        for x in range(WIDTH // self.cell_width):
+            pygame.draw.line(self.screen, GREY, (x * self.cell_width,
+                                                 0), (x * self.cell_width, HEIGHT))
+        for y in range(HEIGHT // self.cell_height):
+            pygame.draw.line(self.screen, GREY, (0, y *
+                                                 self.cell_height), (WIDTH, y * self.cell_height))
+
 
 # ------------------INTRO  FUNCTIES -----------------------------
-
 
     def start_events(self):
         for event in pygame.event.get():
@@ -94,7 +116,13 @@ class App:
     def playing_update(self):
         pass
 
+
 # ---------Dit tekent de tekst het scherm en maakt gebruik van de draw_text functie---------------------
+
+# achtergrond maze
+
     def playing_draw(self):
-        self.screen.fill(WHITE)
+        self.screen.blit(self.background, (0, 0))
+        self.grid()
         pygame.display.flip()
+        pygame.display.update()

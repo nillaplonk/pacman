@@ -1,10 +1,11 @@
 # SCHERM SETTINGS
-WIDTH, HEIGHT = 448, 596
+WIDTH, HEIGHT = 560, 620
 FPS = 60
 # Kleuren
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+GREY = (110, 110, 110)
 
 
 # text settings
