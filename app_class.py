@@ -23,7 +23,7 @@ class App:
         self.cell_width = MAZE_WIDTH // COLUM
         self.cell_height = MAZE_HEIGHT // ROW
 
-# maken van de speler
+    # maken van de speler
         self.player = Player(self, P_START_POS)
         self.load()
 
@@ -49,6 +49,7 @@ class App:
 
 # ---------------------wat help functies voor dingen---------------------------
 
+
     def draw_text(self, words, screen, position, size, color, font):
         font = pygame.font.SysFont(font, size)
         text = font.render(words, False, color)
@@ -68,6 +69,7 @@ class App:
 
 # deze functie tekent lijnen over het scherm die we kunnen gebruiken om de muren de definieren.
 
+
     def grid(self):
         for x in range(WIDTH // self.cell_width):
             pygame.draw.line(self.background, GREY, (x * self.cell_width,
@@ -78,6 +80,7 @@ class App:
 
 
 # ------------------INTRO  FUNCTIES -----------------------------
+
 
     def start_events(self):
         for event in pygame.event.get():
@@ -105,11 +108,9 @@ class App:
                        (255, 255, 255), START_FONT)
 
         pygame.display.update()
-        # pygame.display.flip()
 
 
 # ------------------PLAYING  FUNCTIES -----------------------------
-
 
     def playing_events(self):
         for event in pygame.event.get():
@@ -118,16 +119,13 @@ class App:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    self.player.move(vec(-1,0))
+                    self.player.move(vec(-1, 0))
                 if event.key == pygame.K_RIGHT:
-                    self.player.move(vec(1,0))
+                    self.player.move(vec(1, 0))
                 if event.key == pygame.K_UP:
-                    self.player.move(vec(0,-1))
+                    self.player.move(vec(0, -1))
                 if event.key == pygame.K_DOWN:
-                    self.player.move(vec(0,1))
-
-
-
+                    self.player.move(vec(0, 1))
 
     def playing_update(self):
         self.player.update()
@@ -137,17 +135,18 @@ class App:
 
 # achtergrond maze
 
+
     def playing_draw(self):
         self.screen.fill(BLACK)
-        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
+        self.screen.blit(
+            self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
         self.grid()
 
         self.draw_text("HIGHSCORE: 0", self.screen, [
                        WIDTH // 2 + TOP_BOTTOM_BUFFER, 15], 20, (255, 255, 255), START_FONT)
-        self.draw_text("SCORE : ", self.screen, [WIDTH // 4- TOP_BOTTOM_BUFFER, 15], 20,
+        self.draw_text("SCORE : ", self.screen, [WIDTH // 4 - TOP_BOTTOM_BUFFER, 15], 20,
                        (255, 255, 255), START_FONT)
 
         self.player.draw()
 
-        pygame.display.flip()
         pygame.display.update()

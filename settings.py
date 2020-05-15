@@ -17,7 +17,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (110, 110, 110)
 PLAYER_COLOR = (190, 190, 30)
-RED = (220,20,60)
+RED = (220, 20, 60)
 
 
 # text settings
