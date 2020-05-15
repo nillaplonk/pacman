@@ -1,6 +1,5 @@
 from pygame.math import Vector2
 
-
 # SCHERM SETTINGS
 WIDTH, HEIGHT = 610, 670
 FPS = 60
@@ -29,6 +28,15 @@ START_FONT = 'arial black'
 
 
 # player settings
-P_START_POS = Vector2(1, 1)
+
+p_pos = Vector2(1, 1)
+
+# with open("wall.txt", "r") as walls:
+#     for yline, line in enumerate(walls):
+#         for xline, char in enumerate(line):
+#             if char == "1":
+#                 P_START_POS = Vector2(xline, yline)
+#     else:
+#         pass
 
 # enemy settings
