@@ -5,6 +5,7 @@ import time
 from settings import *
 import sys
 from player_class import *
+from ghosts import *
 
 pygame.init()
 
@@ -18,17 +19,19 @@ class App:
         self.clock = pygame.time.Clock()
         self.running = True
         self.state = 'start'
-
         # voor het maken van de grid
         self.cell_width = MAZE_WIDTH // COLUM
         self.cell_height = MAZE_HEIGHT // ROW
         self.food = []
         self.walls = []
+        self.ghosts = []
+        self.ghost_position = []
         self.score = 0
 
-    # maken van de speler
+    # maken van de spelers
         self.player = Player(self, p_pos)
         self.load()
+        self.make_ghosts()
 
     def run(self):
         while self.running:
@@ -78,9 +81,14 @@ class App:
                     elif char == "F":
                         self.food.append(vec(xline, yline))
                     # elif char == "P":
-                    #     self.p_pos = vec(xline, yline)
-
+                    #     self.p_pos = [xline, yline]
+                    elif char in ["2", "3", "4", "5"]:
+                        self.ghost_position.append(vec(xline, yline))
                         # deze functie tekent lijnen over het scherm die we kunnen gebruiken om de muren de definieren.
+
+    def make_ghosts(self):
+        for position in self.ghost_position:
+            self.ghosts.append(Ghost(self, position))
 
     def grid(self):
         for x in range(WIDTH // self.cell_width):
@@ -144,6 +152,8 @@ class App:
 
     def playing_update(self):
         self.player.update()
+        for ghost in self.ghosts:
+            ghost.update()
 
 
 # ---------Dit tekent de tekst het scherm en maakt gebruik van de draw_text functie---------------------
@@ -163,6 +173,8 @@ class App:
                        (255, 255, 255), START_FONT)
 
         self.player.draw()
+        for ghost in self.ghosts:
+            ghost.draw()
 
         pygame.display.update()
 

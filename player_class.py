@@ -1,6 +1,9 @@
 import pygame
 from settings import *
+from app_class import *
 vec = pygame.math.Vector2
+
+# pacman = pygame.imgae.load("images/pacman.png")
 
 
 class Player:
@@ -14,6 +17,7 @@ class Player:
         # hier word de richting in opgeslagen
         self.stored_direction = None
         self.collide = False
+        self.screen = self.app.screen
 
     def update(self):
         if not self.collide:
@@ -41,6 +45,9 @@ class Player:
         pygame.draw.rect(self.app.screen, RED, (self.grid_position[0] * self.app.cell_width + TOP_BOTTOM_BUFFER // 2,
                                                 self.grid_position[1] * self.app.cell_height + TOP_BOTTOM_BUFFER // 2, self.app.cell_width, self.app.cell_height), 1)
 
+        # self.screen.blit(pacman, (int(
+        #     self.pixel_position.x), int(self.pixel_position.y)))
+
     def move(self, direction):
         self.stored_direction = direction
 
@@ -49,7 +56,7 @@ class Player:
 
     def get_pix_pos(self):
         return vec((
-            self.grid_position.x * self.app.cell_width) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_width // 2, (self.grid_position.y * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_height // 2)
+            self.grid_position[0] * self.app.cell_width) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_width // 2, (self.grid_position[1] * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_height // 2)
 
     def time_to_move(self):
         if int(self.pixel_position.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
@@ -72,9 +79,9 @@ class Player:
             if int(self.pixel_position.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
                 if self.direction == vec(1, 0) or self.direction == vec(-1, 0):
                     return True
-        elif int(self.pixel_position.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
-            if self.direction == vec(0, 1) or self.direction == vec(0, -1):
-                return True
+            if int(self.pixel_position.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
+                if self.direction == vec(0, 1) or self.direction == vec(0, -1):
+                    return True
         return False
 
     def eat_food(self):
