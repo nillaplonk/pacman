@@ -3,50 +3,49 @@ from settings import *
 from app_class import *
 vec = pygame.math.Vector2
 
-# pacman = pygame.imgae.load("images/pacman.png")
+p1 = pygame.image.load("images/pacman.png")
+pacman = pygame.transform.scale(p1, (20, 20))
 
 
 class Player:
     def __init__(self, app, position):
         self.app = app
-
+        self.screen = self.app.screen
         # dit is om het bolletje in het midden van een vierkant in de grid te krijgen
         self.grid_position = position
+
         self.pixel_position = self.get_pix_pos()
         self.direction = vec(1, 0)
         # hier word de richting in opgeslagen
         self.stored_direction = None
         self.collide = False
-        self.screen = self.app.screen
+        self.speed = 2.5
 
     def update(self):
         if not self.collide:
-            self.pixel_position += self.direction
+            self.pixel_position += self.direction * self.speed
         if self.time_to_move():
             if self.stored_direction != None:
                 self.direction = self.stored_direction
-        self.collide = self.collision()
-
+            self.collide = self.collision()
+        if self.at_food():
+            self.eat_food()
         # Setting grid position in reference to pix pos
         self.grid_position[0] = (self.pixel_position[0] - TOP_BOTTOM_BUFFER +
                                  self.app.cell_width // 2) // self.app.cell_width + 1
         self.grid_position[1] = (self.pixel_position[1] - TOP_BOTTOM_BUFFER +
                                  self.app.cell_height // 2) // self.app.cell_height + 1
 
-        if self.at_food():
-            self.eat_food()
-
     def draw(self):
         # dit is de player getekend
         pygame.draw.circle(self.app.screen, PLAYER_COLOR, (int(
-            self.pixel_position.x), int(self.pixel_position.y)), self.app.cell_width // 2 - 1)
+            self.pixel_position.x), int(self.pixel_position.y)), self.app.cell_width // 2 - 2)
 
+        # pacman.blit(self.screen, (int(
+        # self.pixel_position.x), int(self.pixel_position.y)))
         # tekent de grid positie vierkant
-        pygame.draw.rect(self.app.screen, RED, (self.grid_position[0] * self.app.cell_width + TOP_BOTTOM_BUFFER // 2,
-                                                self.grid_position[1] * self.app.cell_height + TOP_BOTTOM_BUFFER // 2, self.app.cell_width, self.app.cell_height), 1)
-
-        # self.screen.blit(pacman, (int(
-        #     self.pixel_position.x), int(self.pixel_position.y)))
+        pygame.draw.rect(self.app.screen, RED, (self.grid_position.x * self.app.cell_width + TOP_BOTTOM_BUFFER // 2,
+                                                self.grid_position.y * self.app.cell_height + TOP_BOTTOM_BUFFER // 2, self.app.cell_width, self.app.cell_height), 1)
 
     def move(self, direction):
         self.stored_direction = direction

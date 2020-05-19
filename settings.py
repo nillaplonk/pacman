@@ -1,8 +1,13 @@
+import pygame
+
 from pygame.math import Vector2
+vec = pygame.math.Vector2
+
 
 # SCHERM SETTINGS
 WIDTH, HEIGHT = 610, 670
-FPS = 60
+FLAGS = pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.FULLSCREEN
+FPS = 90
 TOP_BOTTOM_BUFFER = 50
 MAZE_WIDTH, MAZE_HEIGHT = WIDTH - TOP_BOTTOM_BUFFER, HEIGHT - TOP_BOTTOM_BUFFER
 
@@ -29,7 +34,7 @@ START_FONT = 'arial black'
 
 # player settings
 
-p_pos = Vector2(1, 1)
+# p_pos = vec(13, 29)
 
 # with open("wall.txt", "r") as walls:
 #     for yline, line in enumerate(walls):

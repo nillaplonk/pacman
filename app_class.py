@@ -9,28 +9,33 @@ from ghosts import *
 
 pygame.init()
 
-
+# pygame.mixer.music.load("pacman.mp3")
+# pygame.mixer.music.play()
+# pygame.mixer.music.set_volume(0.4)
 vec = pygame.math.Vector2
 
 
 class App:
     def __init__(self):
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode(
+            [WIDTH, HEIGHT], FLAGS)
         self.clock = pygame.time.Clock()
         self.running = True
         self.state = 'start'
         # voor het maken van de grid
         self.cell_width = MAZE_WIDTH // COLUM
         self.cell_height = MAZE_HEIGHT // ROW
-        self.food = []
         self.walls = []
+        self.food = []
         self.ghosts = []
         self.ghost_position = []
+        self.player_position = None
         self.score = 0
 
     # maken van de spelers
-        self.player = Player(self, p_pos)
+
         self.load()
+        self.player = Player(self, vec(self.player_position))
         self.make_ghosts()
 
     def run(self):
@@ -55,6 +60,7 @@ class App:
 
 # ---------------------wat help functies voor dingen---------------------------
 
+
     def draw_text(self, words, screen, position, size, color, font):
         font = pygame.font.SysFont(font, size)
         text = font.render(words, False, color)
@@ -73,30 +79,33 @@ class App:
 
         # openen van het bestand met muren.
         # maakt een lijst met coordinaten van de muren, 1 is een muur, C niet
-        with open("wall.txt", "r") as walls:
-            for yline, line in enumerate(walls):
+        with open("wall.txt", "r") as text:
+            for yline, line in enumerate(text):
                 for xline, char in enumerate(line):
                     if char == "1":
                         self.walls.append(vec(xline, yline))
                     elif char == "F":
                         self.food.append(vec(xline, yline))
-                    # elif char == "P":
-                    #     self.p_pos = [xline, yline]
+                    elif char == "P":
+                        self.player_position = [xline, yline]
                     elif char in ["2", "3", "4", "5"]:
-                        self.ghost_position.append(vec(xline, yline))
+                        self.ghost_position.append([xline, yline])
+                    elif char == "G":
+                        pygame.draw.rect(self.background, BLACK, (xline * self.cell_width,
+                                                                  yline * self.cell_height, self.cell_width, self.cell_height))
                         # deze functie tekent lijnen over het scherm die we kunnen gebruiken om de muren de definieren.
 
     def make_ghosts(self):
-        for position in self.ghost_position:
-            self.ghosts.append(Ghost(self, position))
+        for index, position in enumerate(self.ghost_position):
+            self.ghosts.append(Ghost(self, vec(position), index))
 
     def grid(self):
         for x in range(WIDTH // self.cell_width):
-            pygame.draw.line(self.background, GREY, (x * self.cell_width,
-                                                     0), (x * self.cell_width, HEIGHT))
-        for y in range(HEIGHT // self.cell_height):
-            pygame.draw.line(self.background, GREY, (0, y *
-                                                     self.cell_height), (WIDTH, y * self.cell_height))
+            pygame.draw.line(self.background, GREY, (x * self.cell_width, 0),
+                             (x * self.cell_width, HEIGHT))
+        for x in range(HEIGHT // self.cell_height):
+            pygame.draw.line(self.background, GREY, (0, x * self.cell_height),
+                             (WIDTH, x * self.cell_height))
 
         for food in self.food:
             pygame.draw.rect(self.background, (0, 255, 0),
@@ -134,7 +143,6 @@ class App:
 
 # ------------------PLAYING  FUNCTIES -----------------------------
 
-
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -159,6 +167,7 @@ class App:
 # ---------Dit tekent de tekst het scherm en maakt gebruik van de draw_text functie---------------------
 
 # achtergrond maze
+
 
     def playing_draw(self):
         self.screen.fill(BLACK)
