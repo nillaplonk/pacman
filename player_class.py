@@ -12,7 +12,7 @@ class Player:
         self.app = app
         self.screen = self.app.screen
         # dit is om het bolletje in het midden van een vierkant in de grid te krijgen
-        self.grid_position = position
+        self.grid_position = vec(position[0], position[1])
 
         self.pixel_position = self.get_pix_pos()
         self.direction = vec(1, 0)
@@ -20,6 +20,7 @@ class Player:
         self.stored_direction = None
         self.collide = False
         self.speed = 2.5
+        self.life = 3
 
     def update(self):
         if not self.collide:
@@ -44,8 +45,13 @@ class Player:
         # pacman.blit(self.screen, (int(
         # self.pixel_position.x), int(self.pixel_position.y)))
         # tekent de grid positie vierkant
-        pygame.draw.rect(self.app.screen, RED, (self.grid_position.x * self.app.cell_width + TOP_BOTTOM_BUFFER // 2,
-                                                self.grid_position.y * self.app.cell_height + TOP_BOTTOM_BUFFER // 2, self.app.cell_width, self.app.cell_height), 1)
+        pygame.draw.rect(self.app.screen, RED, (self.grid_position[0] * self.app.cell_width + TOP_BOTTOM_BUFFER // 2,
+                                                self.grid_position[1] * self.app.cell_height + TOP_BOTTOM_BUFFER // 2, self.app.cell_width, self.app.cell_height), 1)
+
+        # Levens op het scherm
+        for i in range(self.life):
+            pygame.draw.circle(self.app.screen, PLAYER_COLOR,
+                               (50 + 15 * i, HEIGHT - 15), 8)
 
     def move(self, direction):
         self.stored_direction = direction
@@ -59,11 +65,12 @@ class Player:
 
     def time_to_move(self):
         if int(self.pixel_position.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
-            if self.direction == vec(1, 0) or self.direction == vec(-1, 0):
+            if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == vec(0, 0):
                 return True
         if int(self.pixel_position.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
-            if self.direction == vec(0, 1) or self.direction == vec(0, -1):
+            if self.direction == vec(0, 1) or self.direction == vec(0, -1) or self.direction == vec(0, 0):
                 return True
+        return False
 
     def collision(self):
         for wall in self.app.walls:

@@ -17,20 +17,21 @@ class Ghost:
     def __init__(self, app, position, number):
         self.app = app
         self.grid_position = position
+        self.start_position = [position.x, position.y]
         self.pixel_position = self.get_pix_pos()
         self.screen = self.app.screen
         self.ghost_number = number
-        self.direction = vec(1, 0)
+        self.direction = vec(0, 0)
         self.mood = self.set_mood()
-        self.target = None
+        self.newtarget = None
         self.speed = 2
 
     def update(self):
-        self.target = self.set_target()
+        self.newtarget = self.target()
         if self.target != self.grid_position:
             self.pixel_position += self.direction * self.speed
-        if self.time_to_move:
-            self.move()
+            if self.time_to_move:
+                self.move()
 
         self.grid_position[0] = (self.pixel_position[0] - TOP_BOTTOM_BUFFER +
                                  self.app.cell_width // 2) // self.app.cell_width + 1
@@ -40,18 +41,18 @@ class Ghost:
     def draw(self):
         if self.ghost_number == 0:
             self.screen.blit(Blinky, (int(self.pixel_position.x - self.app.cell_width //
-                                          2 - 1), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
+                                          2), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
         elif self.ghost_number == 1:
             self.screen.blit(Clyde, (int(self.pixel_position.x - self.app.cell_width //
-                                         2 - 1), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
+                                         2), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
         elif self.ghost_number == 2:
             self.screen.blit(Inky, (int(self.pixel_position.x - self.app.cell_width //
-                                        2 - 1), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
+                                        2), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
         elif self.ghost_number == 3:
             self.screen.blit(Pinky, (int(self.pixel_position.x - self.app.cell_width //
-                                         2 - 1), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
+                                         2), int(self.pixel_position.y - self.app.cell_height // 2 - 1)))
 
-    def set_target(self):
+    def target(self):
         if self.mood == "fast" or self.mood == "slow":
             return self.app.player.grid_position
         else:
@@ -80,21 +81,22 @@ class Ghost:
 
     def time_to_move(self):
         if int(self.pixel_position.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
-            if self.direction == vec(1, 0) or self.direction == vec(-1, 0):
+            if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == 0:
                 return True
         if int(self.pixel_position.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
-            if self.direction == vec(0, 1) or self.direction == vec(0, -1):
+            if self.direction == vec(0, 1) or self.direction == vec(0, -1) or self.direction == 0:
                 return True
+        return False
 
     def move(self):
         if self.mood == "random":
             self.direction = self.random_direction()
         if self.mood == "slow":
-            self.direction = self.get_direction(self.target)
+            self.direction = self.get_direction(self.newtarget)
         if self.mood == "fast":
-            self.direction = self.get_direction(self.target)
+            self.direction = self.get_direction(self.newtarget)
         if self.mood == "scared":
-            self.direction = self.get_direction(self.target)
+            self.direction = self.get_direction(self.newtarget)
 
     def get_direction(self, target):
         next_cell = self.find_next_path(target)
@@ -146,15 +148,15 @@ class Ghost:
         while True:
             number = random.randint(-2, 1)
             if number == -2:
-                x_dir, y_dir = 1, 0
+                x_direction, y_direction = 1, 0
             elif number == -1:
-                x_dir, y_dir = 0, 1
+                x_direction, y_direction = 0, 1
             elif number == 0:
-                x_dir, y_dir = -1, 0
+                x_direction, y_direction = -1, 0
             else:
-                x_dir, y_dir = 0, -1
-            next_pos = vec(self.grid_position.x + x_dir,
-                           self.grid_position.y + y_dir)
+                x_direction, y_direction = 0, -1
+            next_pos = vec(self.grid_position.x + x_direction,
+                           self.grid_position.y + y_direction)
             if next_pos not in self.app.walls:
                 break
-        return vec(x_dir, y_dir)
+        return vec(x_direction, y_direction)

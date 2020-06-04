@@ -9,16 +9,16 @@ from ghosts import *
 
 pygame.init()
 
-# pygame.mixer.music.load("pacman.mp3")
-# pygame.mixer.music.play()
-# pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.load("pacman.mp3")
+pygame.mixer.music.play()
+pygame.mixer.music.set_volume(0.1)
 vec = pygame.math.Vector2
 
 
 class App:
     def __init__(self):
         self.screen = pygame.display.set_mode(
-            [WIDTH, HEIGHT], FLAGS)
+            [WIDTH, HEIGHT])
         self.clock = pygame.time.Clock()
         self.running = True
         self.state = 'start'
@@ -163,11 +163,13 @@ class App:
         for ghost in self.ghosts:
             ghost.update()
 
+        for ghost in self.ghosts:
+            if ghost.grid_position == self.player.grid_position:
+                self.die()
 
-# ---------Dit tekent de tekst het scherm en maakt gebruik van de draw_text functie---------------------
+                # ---------Dit tekent de tekst het scherm en maakt gebruik van de draw_text functie---------------------
 
-# achtergrond maze
-
+                # achtergrond maze
 
     def playing_draw(self):
         self.screen.fill(BLACK)
@@ -191,3 +193,12 @@ class App:
         for food in self.food:
             pygame.draw.circle(self.screen, (255, 215, 0), ((int(
                 food.x * self.cell_width) + self.cell_width // 2) + TOP_BOTTOM_BUFFER // 2, (int(food.y * self.cell_height) + self.cell_height // 2) + TOP_BOTTOM_BUFFER // 2), 5)
+
+    def die(self):
+        self.player.life += -1
+        if self.player.life == 0:
+            self.state == "Game Over"
+        else:
+            self.player.grid_position = vec(self.player_position)
+            self.player.pixel_position = self.player.get_pix_pos()
+            self.player.direction *= 0
